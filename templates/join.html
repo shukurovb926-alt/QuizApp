@@ -1,0 +1,19 @@
+<!-- templates/join.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Quizga qo'shilish</title>
+</head>
+<body>
+  <h2>Ism va familiya bilan ro‘yxatdan o‘ting</h2>
+  <form action="/register" method="post">
+    <input name="name" placeholder="Ism" required>
+    <input name="surname" placeholder="Familiya">
+    <!-- biz bu minimal versiyada bitta quiz_id=1 olamiz -->
+    <input type="hidden" name="quiz_id" value="1">
+    <button type="submit">Kirish</button>
+  </form>
+  <p>Admin sahifa: <a href="/admin" target="_blank">/admin</a></p>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!-- templates/participant.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Quiz</title>
+</head>
+<body>
+  <h2>Savol-javob</h2>
+  <div id="status">Yuklanmoqda...</div>
+  <div id="qbox" style="display:none;">
+    <p id="qtext"></p>
+    <div id="choices"></div>
+    <p>Qolgan vaqt: <span id="time">--</span>s</p>
+  </div>
+<script>
+const pid = {{ pid }};
+let last_qid = null;
+async function update(){
+  const res = await fetch('/api/current/' + pid);
+  const js = await res.json();
+  if(js.state === 'waiting'){
+    document.getElementById('status').innerText = 'Boshlanishni kuting...';
+    document.getElementById('qbox').style.display='none';
+  } else if(js.state === 'finished'){
+    document.getElementById('status').innerText = 'Quiz tugadi. Rahmat!';
+    document.getElementById('qbox').style.display='none';
+  } else if(js.state === 'question'){
+    document.getElementById('status').innerText = '';
+    document.getElementById('qbox').style.display='';
+    document.getElementById('qtext').innerText = js.qtext;
+    last_qid = js.question_id;
+    const ch = js.choices;
+    const container = document.getElementById('choices');
+    container.innerHTML = '';
+    ch.forEach((c,i)=>{
+      const btn = document.createElement('button');
+      btn.innerText = (i+1)+'. '+c;
+      btn.onclick = async ()=> {
+        // submit answer
+        await fetch('/api/answer', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({participant_id:pid, question_id:last_qid, answer:i})
+        });
+        btn.disabled = true;
+      };
+      container.appendChild(btn);
+      container.appendChild(document.createElement('br'));
+    });
+    document.getElementById('time').innerText = js.time_left;
+  }
+}
+setInterval(update, 1000);
+update();
+</script>
+</body>
+</html>

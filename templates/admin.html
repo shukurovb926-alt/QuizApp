@@ -1,0 +1,49 @@
+<!-- templates/admin.html -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Admin</title></head>
+<body>
+  <h2>Admin — Quiz yaratish va boshqarish</h2>
+
+  <h3>Yangi quiz yaratish</h3>
+  <form action="/admin/create" method="post">
+    <input name="title" placeholder="Quiz nomi" value="Mening quizim">
+    <input name="q_time" type="number" value="15" min="5"> (har savol uchun sekund)
+    <p>Savollar format: bir qatorda — Question?||Choice1||Choice2||Choice3||Choice4||correctIndex</p>
+    <textarea name="questions" rows="6" cols="60">Misol: Qaysi rang qizil?||Qizil||Yashil||Moviy||Sariq||0</textarea>
+    <br><button type="submit">Yaratish</button>
+  </form>
+
+  <h3>Mavjud quizlar</h3>
+  <ul>
+  {% for q in quizzes %}
+    <li>
+      {{ q['id'] }} - {{ q['title'] }}
+      <form action="/admin/start/{{q['id']}}" method="post" style="display:inline">
+        <button type="submit">Start</button>
+      </form>
+      <form action="/admin/next/{{q['id']}}" method="post" style="display:inline">
+        <button type="submit">Next</button>
+      </form>
+      <a href="#" onclick="fetchStats({{q['id']}})">Stats</a>
+    </li>
+  {% endfor %}
+  </ul>
+
+  <div id="stats"></div>
+
+<script>
+async function fetchStats(id){
+  const res = await fetch('/admin/stats/' + id);
+  const js = await res.json();
+  let out = '<h4>Statistika (participantlar — javoblar soni)</h4><ul>';
+  js.forEach(p=>{
+    out += '<li>' + p.name + ' ' + p.surname + ' — ' + p.answers + '</li>';
+  });
+  out += '</ul>';
+  document.getElementById('stats').innerHTML = out;
+}
+</script>
+
+</body>
+</html>
