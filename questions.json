@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "question": "O'zbekiston poytaxti qaysi?",
+        "options": ["Samarqand", "Toshkent", "Buxoro", "Xiva"],
+        "answer": "Toshkent"
+    },
+    {
+        "id": 2,
+        "question": "2 + 2 nechiga teng?",
+        "options": ["3", "4", "5", "6"],
+        "answer": "4"
+    }
+]
